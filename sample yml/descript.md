@@ -123,7 +123,9 @@ kubectl apply -f niginxpod.yml
 ### 5- statefullset sample
 
 
+use belove link:
 
+https://github.com/zizitizi/kubernetes-road-map/blob/main/statefullset/statefullset.md
 
 
 
