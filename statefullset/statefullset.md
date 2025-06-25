@@ -100,6 +100,7 @@ vi storageclass.yml
 
  vi 2pv.yml
 
+  -
   apiVersion: v1
   kind: PersistentVolume
   metadata:
@@ -167,6 +168,115 @@ you should delete statefullset and pvc manually. after create pv correctly  and 
 
 
 #### these codes works for me . test it!
+
+for test:
+
+ kubectl exec -it postgres-database-0 -- psql -U postgres
+
+ CREATE TABLE test_table (id SERIAL PRIMARY KEY, data TEXT);
+INSERT INTO test_table (data) VALUES ('hello from pod 0');
+
+kubectl delete pod postgres-database-0
+
+
+now check data agin
+
+
+kubectl exec -it postgres-database-0 -- psql -U postgres -c "SELECT * FROM test_table;"
+
+
+By default, the PostgreSQL StatefulSet database does not automatically replicate or synchronize data between pods.
+
+Each database pod is independent and its data and tables are not synchronized with each other unless you implement replication settings (such as Streaming Replication) yourself.
+
+Here's the step-by-step guide for setting up PostgreSQL Streaming Replication on Kubernetes:
+
+Step 1: Prepare the Primary (Master) Pod
+Enter the primary pod:
+
+bash
+kubectl exec -it postgres-database-0 -- bash
+Open PostgreSQL interactive terminal:
+
+bash
+psql -U postgres
+Create a replication user:
+
+sql
+CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'Welcome1';
+Edit the PostgreSQL configuration file (postgresql.conf):
+
+Locate the file (usually /var/lib/postgresql/data/postgresql.conf) and add or modify these parameters:
+
+text
+wal_level = replica
+max_wal_senders = 10
+wal_keep_size = 64MB
+Edit pg_hba.conf to allow replication connections:
+
+Open /var/lib/postgresql/data/pg_hba.conf and add:
+
+text
+host replication replicator 0.0.0.0/0 md5
+Restart PostgreSQL:
+
+bash
+pg_ctl restart -D /var/lib/postgresql/data
+Or simply delete and recreate the pod to apply changes.
+
+Step 2: Prepare the Standby (Replica) Pod
+Enter the standby pod:
+
+bash
+kubectl exec -it postgres-database-1 -- bash
+Clear existing data directory (if any):
+
+bash
+rm -rf /var/lib/postgresql/data/*
+Take a base backup from the primary:
+
+bash
+pg_basebackup -h <Primary_IP_or_Service> -D /var/lib/postgresql/data -U replicator -v -P --wal-method=stream
+Replace <Primary_IP_or_Service> with the service name or IP of the primary pod (e.g., postgres-database-0.postgres-service.default.svc.cluster.local).
+
+Enter password Welcome1 when prompted.
+
+Create the standby.signal file to enable standby mode:
+
+bash
+touch /var/lib/postgresql/data/standby.signal
+Configure connection to primary:
+
+Edit postgresql.conf (or create postgresql.auto.conf) and add:
+
+text
+primary_conninfo = 'host=<Primary_IP_or_Service> port=5432 user=replicator password=Welcome1 sslmode=prefer'
+Start PostgreSQL:
+
+bash
+pg_ctl start -D /var/lib/postgresql/data
+Step 3: Test Replication
+Create a test table and insert data on primary:
+
+bash
+kubectl exec -it postgres-database-0 -- psql -U postgres -c "CREATE TABLE test_table(id SERIAL PRIMARY KEY, data TEXT); INSERT INTO test_table(data) VALUES ('hello replication');"
+Check data on standby:
+
+bash
+kubectl exec -it postgres-database-1 -- psql -U postgres -c "SELECT * FROM test_table;"
+If replication is working, the inserted data will appear on the standby pod.
+
+Important Notes
+The primary pod's IP or service must be reachable from the standby pod.
+
+For production environments, consider using PostgreSQL operators like CrunchyData or Zalando for automated management.
+
+Additional security configurations (e.g., SSL/TLS) are recommended for production.
+
+
+kubectl exec -it postgres-database-1 -- psql -U postgres -c "SELECT * FROM test_table;"
+
+
 
 
 
