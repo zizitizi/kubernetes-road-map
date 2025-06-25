@@ -1,4 +1,3 @@
-![Uploading image.png…]()
 
 
 # Database On Kubernetes with statefullset
@@ -155,6 +154,9 @@ vi storageclass.yml
 after all above done you can run:
 
  kubectl apply -f .
+
+
+ 
 
 ## imortant note:
 
