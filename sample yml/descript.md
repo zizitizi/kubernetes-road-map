@@ -199,34 +199,40 @@ http://192.168.144.41:30008/
 ### 7- volume - container runtime mount volume
 
 
-
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-pod
-  labels:
-     app: nginx
-spec:
-  containers:
-  - image: nginx
-    name: test-container
-    volumeMounts:
-    - mountPath: /usr/share/nginx/html/
-      name: html-dir
-    - mountPath: /var/log/nginx/
-      name: log-dir
-
-  volumes:
-  - name: html-dir
-    hostPath:
-      path: /root/k8s/html/
-  - name: log-dir
-    hostPath:
-      path: /root/k8s/log/
-
-
+    
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: nginx-pod
+      labels:
+         app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: test-container
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/
+          name: html-dir
+        - mountPath: /var/log/nginx/
+          name: log-dir
+    
+      volumes:
+      - name: html-dir
+        hostPath:
+          path: /root/k8s/html/
+      - name: log-dir
+        hostPath:
+          path: /root/k8s/log/
 
 
+in that worker node that pods runing make sure of existance of  entire directory path to html and log file.
+
+to test 
+
+echo "hello from hostpath" > html/index.html
+
+ curl 10.244.2.14
+hello from hostpath
 
 
 ### 8- volume - persistent volume in k8s sample
