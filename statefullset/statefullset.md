@@ -86,12 +86,12 @@ vi statefulset.yml
 
 vi storageclass.yml
 
-  apiVersion: storage.k8s.io/v1
-  kind: StorageClass
-  metadata:
-    name: local-storage
-  provisioner: kubernetes.io/no-provisioner
-  volumeBindingMode: WaitForFirstConsumer
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: local-storage
+    provisioner: kubernetes.io/no-provisioner
+    volumeBindingMode: WaitForFirstConsumer
 
 
 
