@@ -22,7 +22,6 @@ sudo chown 1000:1000  /mnt/data/postgres-disk-1
 vi statefulset.yml
 
 
-  # statefulset.yml
   apiVersion: apps/v1
   kind: StatefulSet
   metadata:
