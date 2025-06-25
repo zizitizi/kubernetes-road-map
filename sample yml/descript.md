@@ -1,6 +1,9 @@
 
 
 
+## in all sample just copy codes in yml file save it and :
+
+kubectl apply -f thatfile.yml
 
 
 ### 1- single simple pod
