@@ -119,7 +119,41 @@ kubectl apply -f niginxpod.yml
                    - containerPort: 80
 
 
-### 5- 
+### 5- statefullset sample
+
+
+
+
+
+
+### 6- Service node port
+
+
+
+
+
+### 7- volume - container runtime mount volume
+
+
+
+
+
+### 8- volume - persistent volume in k8s sample
+
+
+##### pv sample
+
+
+
+##### pvc sample
+
+
+
+
+
+
+
+
 
 
 
