@@ -150,6 +150,14 @@ kubectl apply -f niginxpod.yml
 
 
 
+##### asign pvc to a deployment
+
+
+
+
+
+
+
 
 
 
