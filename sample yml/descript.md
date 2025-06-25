@@ -132,6 +132,61 @@ https://github.com/zizitizi/kubernetes-road-map/blob/main/statefullset/statefull
 ### 6- Service node port
 
 
+    ---
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: web-server
+    ---
+    
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+         name: nginx-deploy
+         namespace: web-server
+         labels:
+           app: websrv
+    spec:
+       replicas: 3
+       selector:
+         matchLabels:
+           app: websrv
+           version: v1
+       minReadySeconds: 10
+       strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 1
+       template:
+         metadata:
+            labels:
+               app: websrv
+               version: v1
+         spec:
+            containers:
+               - name: nginx-ctr
+                 image: nginx:latest
+                 ports:
+                   - containerPort: 80
+    
+    ---
+    
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: nginx-svc
+      namespace: web-server
+      labels:
+        app: websrv
+    spec:
+      type: NodePort
+      ports:
+        - targetPort: 80
+          port: 8080
+          nodePort: 30008
+      selector:
+         app: websrv
 
 
 
