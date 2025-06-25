@@ -22,41 +22,41 @@ sudo chown 1000:1000  /mnt/data/postgres-disk-1
 vi statefulset.yml
 
 
-   apiVersion: apps/v1
-   kind: StatefulSet
-   metadata:
-     name: postgres-database
-   spec:
-     selector:
-       matchLabels:
-         app: postgres-database
-     serviceName: postgres-service
-     replicas: 2
-     template:
-       metadata:
-         labels:
-           app: postgres-database
-       spec:
-         containers:
-           - name: postgres-database
-             image: postgres:15
-             volumeMounts:
-               - name: postgres-disk
-                 mountPath: /var/lib/postgresql/data
-             env:
-               - name: POSTGRES_PASSWORD
-                 value: zizi
-               - name: PGDATA
-                 value: /var/lib/postgresql/data/pgdata
-     volumeClaimTemplates:
-       - metadata:
-           name: postgres-disk
-         spec:
-           accessModes: [ "ReadWriteOnce" ]
-           storageClassName: local-storage
-           resources:
-             requests:
-               storage: 5Gi
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+name: postgres-database
+spec:
+selector:
+  matchLabels:
+    app: postgres-database
+serviceName: postgres-service
+replicas: 2
+template:
+  metadata:
+    labels:
+      app: postgres-database
+  spec:
+    containers:
+      - name: postgres-database
+        image: postgres:15
+        volumeMounts:
+          - name: postgres-disk
+            mountPath: /var/lib/postgresql/data
+        env:
+          - name: POSTGRES_PASSWORD
+            value: zizi
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+volumeClaimTemplates:
+  - metadata:
+      name: postgres-disk
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: local-storage
+      resources:
+        requests:
+          storage: 5Gi
 
 
 
