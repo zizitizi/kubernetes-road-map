@@ -235,19 +235,177 @@ echo "hello from hostpath" > html/index.html
 hello from hostpath
 
 
-### 8- volume - persistent volume in k8s sample
+### 8- volume - persistent volume with type nfs in k8s sample
+
+ apt install nfs-kernel-server
+ 
+
+mkdir -p /srv/nfs4/data
+
+
+mkdir /var/k8s-logs
+
+
+mount --bind /var/k8s-logs/ /srv/nfs4/data/
+
+
+ nano /etc/exports
+
+
+/srv/nfs4       192.168.144.0/24(sync,wdelay,hide,crossmnt,no_subtree_check,fsid=0,sec=sys,rw,secure,root_squash,no_all_squash)
+
+/srv/nfs4/data  192.168.144.0/24(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)
+
+
+
+
+
+  exportfs -ar
+
+  exportfs -v
+  
+
 
 
 ##### pv sample
 
+nano nfs-pv.yml
 
+
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+       name: nfs-pv
+    spec:
+      capacity:
+        storage: 10Gi
+      volumeMode: Filesystem
+      accessModes:
+        - ReadWriteMany
+      persistentVolumeReclaimPolicy: Recycle
+      storageClassName: nfs
+      mountOptions:
+       - hard
+       - nfsvers=4.1
+      nfs:
+        path: /data
+        server: 192.168.144.41
+
+
+
+
+
+ kubectl apply -f nfs-pv.yml
+
+ kubectl get pv
+
+ 
 
 ##### pvc sample
+
+
+nano nfs-pvc.yml
+
+
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: nfs-pvc
+    spec:
+      storageClassName: nfs
+      accessModes:
+        - ReadWriteMany
+      resources:
+         requests:
+            storage: 10Gi
+
+
+
+ kubectl apply -f nfs-pvc.yml
+
+ 
+
+kubectl get pvc
 
 
 
 ##### asign pvc to a deployment
 
+
+
+nano nfs-dep-pv.yml
+
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: nginx-deployment
+          labels:
+            app: nginx
+        spec:
+          replicas: 2
+          selector:
+            matchLabels:
+              app: nginx
+          template:
+            metadata:
+              labels:
+                app: nginx
+            spec:
+              containers:
+              - name: nginx
+                image: nginx:latest
+                ports:
+                - containerPort: 80
+                volumeMounts:
+                - name: nfs-storage
+                  mountPath: /usr/share/nginx/html
+              volumes:
+              - name: nfs-storage
+                persistentVolumeClaim:
+                  claimName: nfs-pvc
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+           name: nginx-nfs-srv
+           labels:
+             app: nginx
+        spec:
+          type: NodePort
+          ports:
+            - targetPort: 80
+              port: 8080
+              nodePort: 30080
+          selector:
+             app: nginx
+        ---
+
+
+
+
+
+kubectl get all -o wide
+
+
+
+to test :
+
+echo "heloo from nfs storage nginx from nfs server" > /srv/nfs4/data/index.html
+
+
+root@zizi:~/k8s# curl 10.244.4.15
+heloo from nfs storage nginx from nfs server
+root@zizi:~/k8s#
+root@zizi:~/k8s#
+root@zizi:~/k8s# curl 10.244.2.15
+heloo from nfs storage nginx from nfs server
+root@zizi:~/k8s#
+
+
+also can test it in browser with masternodeipaddress:30080
+
+http://192.168.144.41:30080/
 
 
 
