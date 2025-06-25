@@ -100,55 +100,55 @@ vi storageclass.yml
 
  vi 2pv.yml
 
- 
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-name: pv-postgres-disk-0
-spec:
-capacity:
-  storage: 5Gi
-volumeMode: Filesystem
-accessModes:
-  - ReadWriteOnce
-persistentVolumeReclaimPolicy: Retain
-storageClassName: local-storage
-local:
-  path: /mnt/data/postgres-disk-0
-nodeAffinity:
-  required:
-    nodeSelectorTerms:
-    - matchExpressions:
-      - key: kubernetes.io/hostname
-        operator: In
-        values:
-        - zizi2
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-name: pv-postgres-disk-1
-spec:
-capacity:
-  storage: 5Gi
-volumeMode: Filesystem
-accessModes:
-  - ReadWriteOnce
-persistentVolumeReclaimPolicy: Retain
-storageClassName: local-storage
-local:
-  path: /mnt/data/postgres-disk-1
-nodeAffinity:
-  required:
-    nodeSelectorTerms:
-    - matchExpressions:
-      - key: kubernetes.io/hostname
-        operator: In
-        values:
-        - zizi3
-
-
-
+     
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+    name: pv-postgres-disk-0
+    spec:
+    capacity:
+      storage: 5Gi
+    volumeMode: Filesystem
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    local:
+      path: /mnt/data/postgres-disk-0
+    nodeAffinity:
+      required:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - zizi2
+    ---
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+    name: pv-postgres-disk-1
+    spec:
+    capacity:
+      storage: 5Gi
+    volumeMode: Filesystem
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    local:
+      path: /mnt/data/postgres-disk-1
+    nodeAffinity:
+      required:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - zizi3
+    
+    
+    
 
 
 after all above done you can run:
