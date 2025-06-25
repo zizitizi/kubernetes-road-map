@@ -131,6 +131,8 @@ https://github.com/zizitizi/kubernetes-road-map/blob/main/statefullset/statefull
 
 ### 6- Service node port
 
+nano nginx-deploy-svc.yml 
+
 
     ---
     apiVersion: v1
@@ -189,8 +191,39 @@ https://github.com/zizitizi/kubernetes-road-map/blob/main/statefullset/statefull
          app: websrv
 
 
+now you can see nginx page from your node external browser with masternodeip:30008 . in my example:
+http://192.168.144.41:30008/
+
+
 
 ### 7- volume - container runtime mount volume
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+     app: nginx
+spec:
+  containers:
+  - image: nginx
+    name: test-container
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html/
+      name: html-dir
+    - mountPath: /var/log/nginx/
+      name: log-dir
+
+  volumes:
+  - name: html-dir
+    hostPath:
+      path: /root/k8s/html/
+  - name: log-dir
+    hostPath:
+      path: /root/k8s/log/
+
 
 
 
