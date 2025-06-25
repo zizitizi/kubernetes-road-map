@@ -1,8 +1,9 @@
 
 
 
-## in all sample just copy codes in yml file save it and :
+## how to use sample code
 
+in all sample just copy codes in yml file save it and :
 kubectl apply -f thatfile.yml
 
 
