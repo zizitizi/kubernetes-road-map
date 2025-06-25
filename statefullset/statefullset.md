@@ -67,17 +67,17 @@ vi statefulset.yml
 
 
   # PostgreSQL StatefulSet Service
-  apiVersion: v1
-  kind: Service
-  metadata:
-    name: postgres-loadbalancer
-  spec:
-    selector:
-      app: postgres-database
-    type: LoadBalancer
-    ports:
-      - port: 5432
-        targetPort: 5432
+ apiVersion: v1
+ kind: Service
+ metadata:
+   name: postgres-loadbalancer
+ spec:
+   selector:
+     app: postgres-database
+   type: LoadBalancer
+   ports:
+     - port: 5432
+       targetPort: 5432
 
 
 
