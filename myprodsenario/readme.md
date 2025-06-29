@@ -33,6 +33,27 @@ this senario design is something like this:
 i have 7 node :
 
 
+    final table with 7 node:
+    
+    VM	نقش	IP پیشنهادی
+    VM1 (.40)	Master-1	192.168.144.40
+    VM2 (.41)	Master-2	192.168.144.41
+    VM3 (.42)	Master-3	192.168.144.42
+    VM4 (.43)	Worker-1 (+Ceph)	192.168.144.43
+    VM5 (.44)	Worker-2 (+Ceph)	192.168.144.44
+    VM6 (.45)	Worker-3 (+Ceph)	192.168.144.45
+    VM7 (.46)	Load Balancer + Monitoring	192.168.144.46
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
