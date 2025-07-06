@@ -35,7 +35,7 @@ i have 7 node :
 
     final table with 7 node:
     
-    VM	نقش	IP پیشنهادی
+    VM	role	IP 
     VM1 (.40)	Master-1	192.168.144.40
     VM2 (.41)	Master-2	192.168.144.41
     VM3 (.42)	Master-3	192.168.144.42
