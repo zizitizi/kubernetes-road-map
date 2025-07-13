@@ -52,11 +52,41 @@ on a node candidate to master :
        --control-plane --certificate-key 3c1cde8d0b6f3e321ffda201f6c3be8360cd3b24854726b882f5b48b3e06494c
 
 
-    
+
+#### new issue for prometheus stack
+
+i have install helm kube prometheus stack. then i expose grafana deployment node port service. to see dashboard out of my cluster . but it didnet expose it. guess what happen . very simple it expose service with container port 80 in default then i change it to 3000. verrrrrrrrrryyyyyyyyy simple. its my code
+
+note: kubectl port-forward svc/kube-prometheus-grafana -n monitoring 3000:80
+
+
+kubectl expose svc kube-prometheus-my-grafana \
+  --namespace monitoring \
+  --type=NodePort \
+  --name=grafana-nodeport
+
+
+kubectl get service grafana-nodeport -n monitoring -o wide
+
+for exaple exposed port are 30793
+
+sudo netstat -tuln | grep 30793
+
+kubectl edit service grafana-nodeport -n monitoring
+
+
+ports:
+- nodePort: 30793
+  port: 80
+  protocol: TCP
+  targetPort: 80  # change this line to 3000
 
 
 
 
+
+
+kubectl -n rook-ceph port-forward svc/rook-ceph-mgr-dashboard 8443:8443
 
 
 
